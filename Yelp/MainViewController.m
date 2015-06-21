@@ -11,6 +11,8 @@
 #import "Business.h"
 #import "BusinessCell.h"
 #import "FiltersViewController.h"
+#import <TSMessage.h>
+#import <SVProgressHUD.h>
 
 NSString * const kYelpConsumerKey = @"eqGmxYAsZMnl9C3GKs137w";
 NSString * const kYelpConsumerSecret = @"xfovXjjqxr5civdJp0sy1p1tq5k";
@@ -38,13 +40,25 @@ NSMutableArray *baseSearchTerms = nil;
 
 
 -(void)fetchBusinessesWithQuery:(NSString *)query params:(NSDictionary *)params {
+    [SVProgressHUD showWithMaskType:SVProgressHUDMaskTypeBlack];
     [self.client searchWithTerm:query params:params success:^(AFHTTPRequestOperation *operation, id response) {
         // NSLog(@"response: %@", response);
         NSArray *businessesDictionary = response[@"businesses"];
         self.businesses = [Business businessWithDictionaries:businessesDictionary];
         [self.tableView reloadData];
+        [SVProgressHUD dismiss];
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
         NSLog(@"error: %@", [error description]);
+        
+        [TSMessage showNotificationWithTitle:@"No items"
+                                    subtitle:@"Please change the filters"
+                                        type:TSMessageNotificationTypeWarning];
+        
+        NSArray *businessesDictionary = [[NSArray alloc]init];
+        self.businesses = [Business businessWithDictionaries:businessesDictionary];
+        [self.tableView reloadData];
+
+        [SVProgressHUD dismiss];
     }];
 }
 

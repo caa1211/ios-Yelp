@@ -6,33 +6,73 @@
 	<dict>
 		<key>Pods-AFNetworking.xcscheme</key>
 		<dict>
-			<key>orderHint</key>
-			<integer>2</integer>
+			<key>isShown</key>
+			<false/>
 		</dict>
 		<key>Pods-BDBOAuth1Manager.xcscheme</key>
 		<dict>
-			<key>orderHint</key>
-			<integer>3</integer>
+			<key>isShown</key>
+			<false/>
+		</dict>
+		<key>Pods-FontAwesomeIconFactory.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
+		<key>Pods-HexColors.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
+		<key>Pods-SVProgressHUD.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
+		<key>Pods-TSMessages.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
 		</dict>
 		<key>Pods.xcscheme</key>
 		<dict>
-			<key>orderHint</key>
-			<integer>1</integer>
+			<key>isShown</key>
+			<false/>
 		</dict>
 	</dict>
 	<key>SuppressBuildableAutocreation</key>
 	<dict>
-		<key>3ADFDC4C2D6C40FDA9C166B0</key>
+		<key>068ACDAEF24665B40D449D00</key>
 		<dict>
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>96C63594E4EF45049741F64F</key>
+		<key>072CA9F23C305C677FD1C73C</key>
 		<dict>
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>BA3292AA93EC4C249841C31D</key>
+		<key>161D900C5C75D161E03CF4A6</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>1AD5623DDA1C340DAA3DFA4B</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>DB2C977FD7B8D8104E73226D</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>E8E6B23279A2997C7982F532</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>F1D0F3C8822D90ECC87B3F19</key>
 		<dict>
 			<key>primary</key>
 			<true/>
