@@ -15,24 +15,31 @@
 @property(nonatomic, readonly) NSDictionary *filters;
 @property (nonatomic, strong) NSMutableArray *categories;
 @property (nonatomic, strong) NSArray *allCategories;
-@property (nonatomic, strong) NSMutableSet *selectedCatrgories;
+@property (nonatomic, strong) NSMutableSet *selectedCategories;
 -(void) initCategories;
 @end
 
 @implementation FiltersViewController
--(id) initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil{
-    self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
+
+- (id) initWithCategories:(NSMutableArray *)categories andSelectedCategories:(NSMutableSet*)selectedCategories {
     
-    if(self){
-        self.selectedCatrgories = [NSMutableSet set];
-        [self initCategories];
+    if ((self = [super initWithNibName:@"FiltersViewController" bundle:nil]))
+    {
+        if (categories != nil && selectedCategories!=nil){
+            self.categories = categories;
+            self.selectedCategories = selectedCategories;
+        }else{
+            self.selectedCategories = [NSMutableSet set];
+            self.categories = [[NSMutableArray alloc]init];
+            [self initCategories];
+        }
     }
+
     return self;
-};
+}
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
     self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Cancel" style:UIBarButtonItemStylePlain target:self action:@selector(onCancel)];
     
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Search" style:UIBarButtonItemStylePlain target:self action:@selector(onSearch)];
@@ -48,9 +55,9 @@
 -(NSDictionary *) filters {
     NSMutableDictionary *filters = [NSMutableDictionary dictionary];
     
-    if(self.selectedCatrgories.count > 0){
+    if(self.selectedCategories.count > 0){
         NSMutableArray *names = [NSMutableArray array];
-        for( NSDictionary *category in self.selectedCatrgories){
+        for( NSDictionary *category in self.selectedCategories){
             [names addObject:category[@"alias"]];
         }
         NSString *categoryFilter = [names componentsJoinedByString:@","];
@@ -65,7 +72,9 @@
 }
 
 -(void) onSearch{
-    [self.delegate filtersViewController:self didChangeFilters:self.filters];
+    [self.delegate filtersViewController:self didChangeFilters:self.filters
+                        filterableCategories:self.categories
+                        selectedCategories:self.selectedCategories];
     [self dismissViewControllerAnimated:YES completion:nil];
 }
 
@@ -75,22 +84,24 @@
 }
 
 - (void) initCategories {
-    NSString *jsonPath = [[NSBundle mainBundle] pathForResource:@"categories"
-                                                         ofType:@"json"];
-    NSData *data = [NSData dataWithContentsOfFile:jsonPath];
-    NSError *error = nil;
+        
+        NSString *jsonPath = [[NSBundle mainBundle] pathForResource:@"categories"
+                                                             ofType:@"json"];
+        NSData *data = [NSData dataWithContentsOfFile:jsonPath];
+        NSError *error = nil;
+        
+        self.allCategories = [NSJSONSerialization JSONObjectWithData:data
+                                                             options:kNilOptions
+                                                               error:&error];
     
-    self.allCategories = [NSJSONSerialization JSONObjectWithData:data
-                                              options:kNilOptions
-                                                error:&error];
-    self.categories = [[NSMutableArray alloc]init];
-    
-    for(NSDictionary *category in self.allCategories){
-        NSArray *parents = category[@"parents"];
-        if (parents.count> 0 && ![parents[0] isEqual:[NSNull null]] && [ (NSString *)parents[0] isEqualToString: @"restaurants"]) {
-          [self.categories addObject:category];
+        
+        for(NSDictionary *category in self.allCategories){
+            NSArray *parents = category[@"parents"];
+            if (parents.count> 0 && ![parents[0] isEqual:[NSNull null]] && [ (NSString *)parents[0] isEqualToString: @"restaurants"]) {
+                [self.categories addObject:category];
+            }
         }
-    }
+    //}
     // NSLog(@"JSON: %@", json);
 }
 
@@ -108,10 +119,10 @@
 -(void) switchCell:(SwitchCell *)cell didUpdateValue:(BOOL)value {
     NSIndexPath *indexPath = [self.tableView indexPathForCell: cell];
     if(value){
-        [self.selectedCatrgories addObject:self.categories[indexPath.row]];
+        [self.selectedCategories addObject:self.categories[indexPath.row]];
     
     }else{
-        [self.selectedCatrgories removeObject:self.categories[indexPath.row]];
+        [self.selectedCategories removeObject:self.categories[indexPath.row]];
     }
 }
 
@@ -123,7 +134,7 @@
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
     SwitchCell *cell = [tableView dequeueReusableCellWithIdentifier:@"SwitchCell"];
     cell.delegate = self;
-    cell.on = [self.selectedCatrgories containsObject:self.categories[indexPath.row]];
+    cell.on = [self.selectedCategories containsObject:self.categories[indexPath.row]];
     cell.titleLabel.text = self.categories[indexPath.row][@"title"];
     return cell;
 }

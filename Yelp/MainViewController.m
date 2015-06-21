@@ -26,6 +26,8 @@ NSString * const kYelpTokenSecret = @"RJjIG-z0KeEFVGugtepuDc8grwo";
 @property (nonatomic, strong) NSDictionary *filters;
 @property (nonatomic, strong) NSTimer *searchDelayer;
 @property (nonatomic, strong) NSString *searchTerm;
+@property (nonatomic, strong) NSMutableArray *filterableCategories;
+@property (nonatomic, strong) NSMutableSet *selectedCategories;
 -(void)fetchBusinessesWithQuery:(NSString *)query params:(NSDictionary *)params;
 @end
 
@@ -34,13 +36,13 @@ NSString * const kYelpTokenSecret = @"RJjIG-z0KeEFVGugtepuDc8grwo";
 
 NSMutableArray *baseSearchTerms = nil;
 
+
 -(void)fetchBusinessesWithQuery:(NSString *)query params:(NSDictionary *)params {
     [self.client searchWithTerm:query params:params success:^(AFHTTPRequestOperation *operation, id response) {
         // NSLog(@"response: %@", response);
         NSArray *businessesDictionary = response[@"businesses"];
         self.businesses = [Business businessWithDictionaries:businessesDictionary];
         [self.tableView reloadData];
-        
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
         NSLog(@"error: %@", [error description]);
     }];
@@ -50,8 +52,7 @@ NSMutableArray *baseSearchTerms = nil;
 {
     // base search terms is restaurants
     baseSearchTerms = [[NSMutableArray alloc] initWithObjects:@"restaurants",nil];
-    self.searchTerm = [baseSearchTerms componentsJoinedByString:@"+"];
-    
+
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
         // You can register for Yelp API keys here: http://www.yelp.com/developers/manage_api_keys
@@ -59,9 +60,8 @@ NSMutableArray *baseSearchTerms = nil;
         
         [self initSearchBar];
         
-        
-        NSString *searchTerms = [[baseSearchTerms mutableCopy] componentsJoinedByString:@"+"];
-        [self fetchBusinessesWithQuery:searchTerms params:nil];
+        self.searchTerm = [baseSearchTerms componentsJoinedByString:@","];
+        [self fetchBusinessesWithQuery:self.searchTerm params:nil];
     }
     return self;
 }
@@ -108,7 +108,7 @@ NSMutableArray *baseSearchTerms = nil;
 - (void)viewWillAppear:(BOOL)animated {
     // Fix height of cell be strange after filter view closing
     [super viewWillAppear:animated];
-    self.tableView.estimatedRowHeight = 70.0; // for example. Set your average height
+    self.tableView.estimatedRowHeight = 100.0; // for example. Set your average height
     self.tableView.rowHeight = UITableViewAutomaticDimension;
     //[self.tableView reloadData];
 }
@@ -116,9 +116,14 @@ NSMutableArray *baseSearchTerms = nil;
 #pragma mark - Filter delegate methods
 
 -(void)filtersViewController:(FiltersViewController *)filtersViewController didChangeFilters:(NSDictionary *)filters
+        filterableCategories: (NSMutableArray*)categories
+        selectedCategories: (NSMutableSet*)selectedCategories
 {
     self.filters = filters;
 
+    self.filterableCategories = categories;
+    self.selectedCategories = selectedCategories;
+    
     [self fetchBusinessesWithQuery:self.searchTerm params:self.filters];
     NSLog(@"@=up=%@", filters);
 }
@@ -126,12 +131,15 @@ NSMutableArray *baseSearchTerms = nil;
 #pragma mark - Private methods
 
 -(void) onFilterButton {
- 
-    FiltersViewController *vc = [[FiltersViewController alloc] init];
+    //FiltersViewController *vc = [[FiltersViewController alloc] init];
+    
+    FiltersViewController *vc = [[FiltersViewController alloc]
+                                 initWithCategories:self.filterableCategories
+                                 andSelectedCategories:self.selectedCategories];
     vc.delegate = self;
+
     UINavigationController *nvc = [[UINavigationController alloc]initWithRootViewController:vc];
     [self presentViewController:nvc animated:YES completion:nil];
-    
 }
 
 
@@ -163,7 +171,7 @@ NSMutableArray *baseSearchTerms = nil;
    
     NSMutableArray *termsAry = [baseSearchTerms mutableCopy];
     [termsAry addObject:self.searchBar.text];
-    self.searchTerm = [termsAry componentsJoinedByString:@"+"];
+    self.searchTerm = [termsAry componentsJoinedByString:@","];
     
     [self fetchBusinessesWithQuery: [NSString stringWithFormat: self.searchTerm, self.searchBar.text] params:self.filters];
     self.searchDelayer = nil;

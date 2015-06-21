@@ -14,10 +14,16 @@
 -(void) filtersViewController: (FiltersViewController *)
 filtersViewController didChangeFilters: (NSDictionary *) filters;
 
+-(void) filtersViewController: (FiltersViewController *)
+filtersViewController didChangeFilters: (NSDictionary *) filters
+filterableCategories: (NSMutableArray*)categories
+selectedCategories: (NSMutableSet*)selectedCategories;
+
 @end
 
 @interface FiltersViewController : UIViewController
 
 @property (nonatomic, weak) id<FiltersViewControllerDelegate>delegate;
 
+-(id) initWithCategories:(NSMutableArray *)categories andSelectedCategories:(NSMutableSet*)selectedCategories;
 @end

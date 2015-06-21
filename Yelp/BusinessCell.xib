@@ -36,7 +36,7 @@
                             <constraint firstAttribute="height" constant="15" id="IHJ-s0-n6E"/>
                         </constraints>
                         <fontDescription key="fontDescription" type="boldSystem" pointSize="12"/>
-                        <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                        <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                         <nil key="highlightedColor"/>
                         <variation key="default">
                             <mask key="constraints">
@@ -47,7 +47,7 @@
                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" horizontalCompressionResistancePriority="751" text="0.07 mi" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="W4O-77-G0f">
                         <rect key="frame" x="277" y="8" width="35" height="12"/>
                         <fontDescription key="fontDescription" type="system" pointSize="10"/>
-                        <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                        <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                         <nil key="highlightedColor"/>
                     </label>
                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="88 Division St. Mission Bay" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="NnM-j4-PsU">
@@ -56,7 +56,7 @@
                             <constraint firstAttribute="height" constant="12" id="4Qr-wW-Bcd"/>
                         </constraints>
                         <fontDescription key="fontDescription" type="system" pointSize="10"/>
-                        <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                        <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                         <nil key="highlightedColor"/>
                         <variation key="default">
                             <mask key="constraints">
@@ -67,7 +67,7 @@
                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="469 Reviews" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="u1C-Wn-2yE">
                         <rect key="frame" x="175" y="30" width="59.5" height="12"/>
                         <fontDescription key="fontDescription" type="system" pointSize="10"/>
-                        <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                        <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                         <nil key="highlightedColor"/>
                     </label>
                     <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="1bV-SN-HMg">
@@ -92,7 +92,7 @@
                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="$$" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="DAI-fx-ZPj">
                         <rect key="frame" x="300" y="30" width="12" height="12"/>
                         <fontDescription key="fontDescription" type="system" pointSize="10"/>
-                        <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                        <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                         <nil key="highlightedColor"/>
                     </label>
                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Thai. Seatfood, Salad" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="M89-Xr-rLd">
@@ -101,7 +101,7 @@
                             <constraint firstAttribute="height" constant="12" id="d1g-Kg-cxc"/>
                         </constraints>
                         <fontDescription key="fontDescription" type="system" pointSize="10"/>
-                        <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                        <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                         <nil key="highlightedColor"/>
                         <variation key="default">
                             <mask key="constraints">
@@ -112,6 +112,7 @@
                 </subviews>
                 <constraints>
                     <constraint firstItem="1bV-SN-HMg" firstAttribute="leading" secondItem="pj6-u2-0qX" secondAttribute="trailing" constant="8" id="0cs-tO-RPt"/>
+                    <constraint firstAttribute="bottom" secondItem="M89-Xr-rLd" secondAttribute="bottom" constant="8.5" id="1b8-aB-RqD"/>
                     <constraint firstItem="NnM-j4-PsU" firstAttribute="top" secondItem="1bV-SN-HMg" secondAttribute="bottom" constant="6" id="1l3-0A-imA"/>
                     <constraint firstItem="M89-Xr-rLd" firstAttribute="top" secondItem="1bV-SN-HMg" secondAttribute="bottom" constant="22" id="2hY-LB-sea"/>
                     <constraint firstItem="mPE-Vy-8xk" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="8" id="2oe-pu-yay"/>
