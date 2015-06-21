@@ -24,9 +24,14 @@
         self.imageUrl = dictionary[@"image_url"];
         self.ratingImageUrl = dictionary[@"rating_img_url"];
         self.numReviews = [dictionary[@"review_count"] integerValue];
-        
-        NSString *street = [dictionary valueForKeyPath:@"location.address"][0];
-        NSString *neighborhood = [dictionary valueForKeyPath:@"location.neighborhoods"][0];
+        NSString *street = @"";
+        if ( ((NSArray *)[dictionary valueForKeyPath:@"location.address"]).count > 0 ) {
+            street = [dictionary valueForKeyPath:@"location.address"][0];
+        }
+        NSString *neighborhood = @"";
+        if ( ((NSArray *)[dictionary valueForKeyPath:@"location.neighborhoods"]).count > 0 ) {
+            neighborhood = [dictionary valueForKeyPath:@"location.neighborhoods"][0];
+        }
         self.address = [NSString stringWithFormat:@"%@, %@", street, neighborhood];
         float milesPerMeter = 0.000621371;
         self.distance = [dictionary[@"distance"] floatValue] * milesPerMeter;

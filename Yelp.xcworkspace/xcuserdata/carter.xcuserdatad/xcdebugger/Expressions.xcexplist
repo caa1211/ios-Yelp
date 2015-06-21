@@ -3,6 +3,28 @@
    version = "1.0">
    <ContextStates>
       <ContextState
+         contextName = "-[Business initWithDictionary:]:Business.m">
+         <PersistentStrings>
+            <PersistentString
+               value = "[dictionary valueForKeyPath:@&quot;location.address&quot;]">
+            </PersistentString>
+            <PersistentString
+               value = "dictionary[@&quot;location&quot;][@&quot;neighborhoods&quot;]">
+            </PersistentString>
+            <PersistentString
+               value = "dictionary[@&quot;location&quot;][@&quot;address&quot;]">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "-[FiltersViewController initCategories]:FiltersViewController.m">
+         <PersistentStrings>
+            <PersistentString
+               value = "parents[0]">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
          contextName = "-[MainViewController tableView:cellForRowAtIndexPath:]:MainViewController.m">
          <PersistentStrings>
             <PersistentString
@@ -18,9 +40,6 @@
                value = "indexPath.row">
             </PersistentString>
          </PersistentStrings>
-      </ContextState>
-      <ContextState
-         contextName = "-[Business initWithDictionary:]:Business.m">
       </ContextState>
    </ContextStates>
 </VariablesViewState>

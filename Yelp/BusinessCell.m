@@ -30,6 +30,7 @@
     [super setSelected:selected animated:animated];
 
     self.nameLabel.preferredMaxLayoutWidth = self.nameLabel.frame.size.width;
+    
     self.thumbImageView.layer.cornerRadius = 3;
     self.thumbImageView.clipsToBounds = YES;
 }
@@ -39,9 +40,14 @@
     [self.thumbImageView setImageWithURL:[NSURL URLWithString:self.business.imageUrl]];
     self.nameLabel.text = self.business.name;
     [self.ratingImageView setImageWithURL:[NSURL URLWithString:self.business.ratingImageUrl]];
-    self.ratingLabel.text = [NSString stringWithFormat:@"%ld Reviewes", self.business.numReviews];
+    self.ratingLabel.text = [NSString stringWithFormat:@"%1d Reviewes", self.business.numReviews];
     self.addressLabel.text = self.business.address;
     self.distanceLabel.text = [NSString stringWithFormat:@"%.2f mi", self.business.distance];
+}
+
+- (void)prepareForReuse {
+    [super prepareForReuse];
+    self.thumbImageView.image = nil;
 }
 
 -(void) layoutSubviews {
