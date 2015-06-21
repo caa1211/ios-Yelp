@@ -32,6 +32,7 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
     self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Cancel" style:UIBarButtonItemStylePlain target:self action:@selector(onCancel)];
     
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Search" style:UIBarButtonItemStylePlain target:self action:@selector(onSearch)];
@@ -116,7 +117,6 @@
 
 #pragma mark - Table view
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
-
     return self.categories.count;
 }
 
@@ -125,7 +125,6 @@
     cell.delegate = self;
     cell.on = [self.selectedCatrgories containsObject:self.categories[indexPath.row]];
     cell.titleLabel.text = self.categories[indexPath.row][@"title"];
-    
     return cell;
 }
 

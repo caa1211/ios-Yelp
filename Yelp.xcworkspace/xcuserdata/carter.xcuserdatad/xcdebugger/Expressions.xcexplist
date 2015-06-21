@@ -3,16 +3,32 @@
    version = "1.0">
    <ContextStates>
       <ContextState
+         contextName = "-[FiltersViewController initWithNibName:bundle:]:FiltersViewController.m">
+         <PersistentStrings>
+            <PersistentString
+               value = "self.defaultCategoryFilters">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "-[FiltersViewController viewDidLoad]:FiltersViewController.m">
+         <PersistentStrings>
+            <PersistentString
+               value = "self.defaultCategoryFilters">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
          contextName = "-[Business initWithDictionary:]:Business.m">
          <PersistentStrings>
+            <PersistentString
+               value = "dictionary[@&quot;location&quot;][@&quot;address&quot;]">
+            </PersistentString>
             <PersistentString
                value = "[dictionary valueForKeyPath:@&quot;location.address&quot;]">
             </PersistentString>
             <PersistentString
                value = "dictionary[@&quot;location&quot;][@&quot;neighborhoods&quot;]">
-            </PersistentString>
-            <PersistentString
-               value = "dictionary[@&quot;location&quot;][@&quot;address&quot;]">
             </PersistentString>
          </PersistentStrings>
       </ContextState>
