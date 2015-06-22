@@ -32,32 +32,30 @@ enum {
 };
 
 NSMutableIndexSet *expandedSections;
-NSArray *allDistance = nil;
-NSMutableArray *selectableDistance = nil;
+NSArray *selectableDistance = nil;
 NSDictionary *distanceFilter = nil;
 
-NSArray *allSortBy = nil;
-NSMutableArray *selectableSortBy = nil;
+NSArray *selectableSortBy = nil;
 NSDictionary *sortByFilter = nil;
 BOOL dealFilter = NO;
 
 - (void) initVariables {
     
-    allDistance = @[
+    selectableDistance = @[
                     @{@"title": @"Auto", @"value": @0},
                     @{@"title": @"0.3 miles", @"value": @483},
                     @{@"title": @"1 mile", @"value": @1609},
                     @{@"title": @"5 miles", @"value": @8047},
                     @{@"title": @"20 miles", @"value": @32187}
                    ];
-    distanceFilter = allDistance[0];
+    distanceFilter = selectableDistance[0];
     
-    allSortBy = @[
+    selectableSortBy = @[
                     @{@"title": @"Best Matched", @"value": @0},
                     @{@"title": @"Distance", @"value": @1},
                     @{@"title": @"Highest Rated", @"value": @2}
                     ];
-    sortByFilter = allSortBy[0];
+    sortByFilter = selectableSortBy[0];
 }
 
 -(id) initWithCategories:(NSMutableArray *)categories
@@ -81,14 +79,14 @@ BOOL dealFilter = NO;
         [self initVariables];
         
         // Restore the selected distance filter
-        for (NSDictionary *distance in allDistance) {
+        for (NSDictionary *distance in selectableDistance) {
             if ([radius_filter isEqual:distance[@"value"]]) {
                 distanceFilter = distance;;
             }
         }
         
         // Restore the selected sortBy filter
-        for (NSDictionary *sortBy in allSortBy) {
+        for (NSDictionary *sortBy in selectableSortBy) {
             if ([sort isEqual:sortBy[@"value"]]) {
                 sortByFilter = sortBy;;
             }
@@ -233,14 +231,14 @@ BOOL dealFilter = NO;
             break;
         case DistanceSection:
             if ([expandedSections containsIndex:section]) {
-                return 5;
+                return 6;
             } else {
                 return 1;
             }
             break;
         case SortBySection:
             if ([expandedSections containsIndex:section]) {
-                return 3;
+                return 4;
             } else {
                 return 1;
             }
@@ -257,6 +255,7 @@ BOOL dealFilter = NO;
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
     NSInteger section = indexPath.section;
     UITableViewCell *cell = nil;
+    BOOL currentlyExpanded = [expandedSections containsIndex:section];
     switch (section) {
         case DealSection:
             cell = [tableView dequeueReusableCellWithIdentifier:@"SwitchCell"];
@@ -265,20 +264,18 @@ BOOL dealFilter = NO;
             ((SwitchCell*)cell).titleLabel.text = @"Offering a Deal";
             break;
         case DistanceSection:
-            if (indexPath.row == 0) {
+            if (!currentlyExpanded) {
                 cell = [tableView dequeueReusableCellWithIdentifier:@"DDParentCell"];
                 ((DDParentCell*)cell).titleLabel.text = distanceFilter[@"title"];
             } else {
                 /* Child cell */
                 cell = [tableView dequeueReusableCellWithIdentifier:@"DDChildCell"];
-                NSString *title = selectableDistance[indexPath.row][@"title"];
+                NSString *title = selectableDistance[indexPath.row-1][@"title"];
                 ((DDChildCell*)cell).titleLabel.text = title;
                 
-//                ((DDChildCell*)cell).isMarked = NO;
-//                if([title isEqual:distanceFilter[@"title"]]){
-//                   // [((DDChildCell*)cell) addMark];
-//                    ((DDChildCell*)cell).isMarked = YES;
-//                }
+                if([title isEqual:distanceFilter[@"title"]]){
+                    [((DDChildCell*)cell) addMark];
+                }
             }
             break;
         case SortBySection:
@@ -288,14 +285,11 @@ BOOL dealFilter = NO;
             } else {
                 /* Child cell */
                 cell = [tableView dequeueReusableCellWithIdentifier:@"DDChildCell"];
-                NSString *title = selectableSortBy[indexPath.row][@"title"];
+                NSString *title = selectableSortBy[indexPath.row-1][@"title"];
                 ((DDChildCell*)cell).titleLabel.text = title;
-                
-//                ((DDChildCell*)cell).isMarked = NO;
-//                if([title isEqual:sortByFilter[@"title"]]){
-//                    //[((DDChildCell*)cell) addMark];
-//                    ((DDChildCell*)cell).isMarked = YES;
-//                }
+                if([title isEqual:sortByFilter[@"title"]]){
+                    [((DDChildCell*)cell) addMark];
+                }
             }
             break;
         case CategorySection:
@@ -368,12 +362,24 @@ BOOL dealFilter = NO;
 
 }
 
-- (void)rotateImageView:(UIImageView*)imageView angle:(CGFloat)angle
+//- (void)rotateImageView:(UIImageView*)imageView angle:(CGFloat)angle
+//{
+//    [UIView animateWithDuration:0.3 delay:0 options:UIViewAnimationOptionCurveLinear animations:^{
+//        [imageView setTransform:CGAffineTransformRotate(imageView.transform, angle)];
+//    }completion:^(BOOL finished){
+//    }];
+//}
+
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath;
 {
-    [UIView animateWithDuration:0.3 delay:0 options:UIViewAnimationOptionCurveLinear animations:^{
-        [imageView setTransform:CGAffineTransformRotate(imageView.transform, angle)];
-    }completion:^(BOOL finished){
-    }];
+    NSInteger section = indexPath.section;
+    BOOL currentlyExpanded = [expandedSections containsIndex:section];
+    
+    if(currentlyExpanded && indexPath.row == 0){
+        return 0;
+    }else{
+        return tableView.rowHeight;
+    }
 }
 
 - (void) toggleDistanceSelector:(NSIndexPath *)indexPath withTableView:(UITableView*)tableView{
@@ -381,22 +387,16 @@ BOOL dealFilter = NO;
     BOOL currentlyExpanded = [expandedSections containsIndex:section];
     
     NSMutableArray *arrRows = [self subTableRows:section withTableView:tableView andExpandedStatus:currentlyExpanded];
-    
-    selectableDistance = [allDistance mutableCopy];
-    [selectableDistance removeObject:distanceFilter];
-    [selectableDistance insertObject:distanceFilter atIndex:0];
-    
+
     UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
     
     if (currentlyExpanded) {
+        [cell setHidden:NO];
         [tableView deleteRowsAtIndexPaths:arrRows withRowAnimation:UITableViewRowAnimationTop];
         ((DDParentCell *)cell).titleLabel.text = distanceFilter[@"title"];
-        [self rotateImageView:((DDParentCell *)cell).arrowIcon angle:-1*MMPI];
     } else {
+        [cell setHidden:YES];;
         [tableView insertRowsAtIndexPaths:arrRows withRowAnimation:UITableViewRowAnimationTop];
-        ((DDParentCell *)cell).titleLabel.text = distanceFilter[@"title"];
-        //((DDParentCell *)cell).titleLabel.text = allDistance[0][@"title"];
-        [self rotateImageView:((DDParentCell *)cell).arrowIcon angle:MMPI];
     }
 }
 
@@ -405,22 +405,24 @@ BOOL dealFilter = NO;
     BOOL currentlyExpanded = [expandedSections containsIndex:section];
     
     NSMutableArray *arrRows = [self subTableRows:section withTableView:tableView andExpandedStatus:currentlyExpanded];
-    
-    selectableSortBy = [allSortBy mutableCopy];
-    [selectableSortBy removeObject:sortByFilter];
-    [selectableSortBy insertObject:sortByFilter atIndex:0];
-    
+
     UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
     
     if (currentlyExpanded) {
+        [cell setHidden:NO];
         [tableView deleteRowsAtIndexPaths:arrRows withRowAnimation:UITableViewRowAnimationTop];
         ((DDParentCell *)cell).titleLabel.text = sortByFilter[@"title"];
-        [self rotateImageView:((DDParentCell *)cell).arrowIcon angle:-1*MMPI];
     } else {
+        [cell setHidden:YES];
         [tableView insertRowsAtIndexPaths:arrRows withRowAnimation:UITableViewRowAnimationTop];
-        ((DDParentCell *)cell).titleLabel.text = sortByFilter[@"title"];
-        //((DDParentCell *)cell).titleLabel.text = allSortBy[0][@"title"];
-        [self rotateImageView:((DDParentCell *)cell).arrowIcon angle:MMPI];
+    }
+}
+
+
+- (void) tableViewRemoveAllMarks:(UITableView *)tableView bySection:(NSInteger)section {
+    for (NSInteger i = 1; i < [tableView numberOfRowsInSection:section]; ++i){
+        UITableViewCell *cell = [tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:i inSection:section]];
+        [(DDChildCell *)cell removeMark];
     }
 }
 
@@ -432,10 +434,10 @@ BOOL dealFilter = NO;
             if (indexPath.row == 0) {
                 [self toggleDistanceSelector:indexPath withTableView:tableView];
             }else {
-                distanceFilter = selectableDistance[indexPath.row];
-                selectableDistance = nil;
-                
-                UITableViewCell *cell = [self.tableView cellForRowAtIndexPath:indexPath];
+                distanceFilter = selectableDistance[indexPath.row-1];
+
+                [self tableViewRemoveAllMarks: tableView bySection:section];
+                UITableViewCell *cell = [self.tableView cellForRowAtIndexPath:indexPath]; 
                 [(DDChildCell *)cell addMark];
 
                 NSIndexPath *parentIndexPath = [NSIndexPath indexPathForRow:0 inSection:section];
@@ -448,9 +450,9 @@ BOOL dealFilter = NO;
             if (indexPath.row == 0) {
                 [self toggleSortBySelector:indexPath withTableView:tableView];
             }else {
-                sortByFilter = selectableSortBy[indexPath.row];
-                selectableSortBy = nil;
+                sortByFilter = selectableSortBy[indexPath.row-1];
                 
+                [self tableViewRemoveAllMarks: tableView bySection:section];
                 UITableViewCell *cell = [self.tableView cellForRowAtIndexPath:indexPath];
                 [(DDChildCell *)cell addMark];
 
@@ -469,24 +471,24 @@ BOOL dealFilter = NO;
 
 #pragma mark - style table section header
 
-//- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
-//{
-//    return 25;
-//}
-//
-//-(UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section{
-//    UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, 50.0f)];
-//
-//    [view setBackgroundColor:UIColorFromRGB(0xf7f7f7)];
-//    UILabel *lbl = [[UILabel alloc] initWithFrame:CGRectMake(5, 0, 150, 25)];
-//    [lbl setFont:[UIFont boldSystemFontOfSize:16]];
-//    [lbl setTextColor:[UIColor grayColor]];
-//    [view addSubview:lbl];
-//    
-//    [lbl setText:[NSString stringWithFormat:@"%@", [self tableView:self.tableView titleForHeaderInSection:section]]];
-//    
-//    return view;
-//}
+- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
+{
+    return 40;
+}
+
+-(UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section{
+    UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, 50.0f)];
+
+    [view setBackgroundColor:UIColorFromRGB(0xf7f7f7)];
+    UILabel *lbl = [[UILabel alloc] initWithFrame:CGRectMake(10, 0, 150, 40)];
+    [lbl setFont:[UIFont boldSystemFontOfSize:15]];
+    [lbl setTextColor:[UIColor grayColor]];
+    [view addSubview:lbl];
+    
+    [lbl setText:[NSString stringWithFormat:@"%@", [self tableView:self.tableView titleForHeaderInSection:section]]];
+    
+    return view;
+}
 
 
 

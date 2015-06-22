@@ -12,6 +12,8 @@
 @property (weak, nonatomic) IBOutlet UIImageView *markIcon;
 @property (weak, nonatomic) IBOutlet UILabel *titleLabel;
 @property (nonatomic, assign) BOOL isMarked;
+
 -(IBAction)addMark;
-    
+-(IBAction)removeMark;
+
 @end

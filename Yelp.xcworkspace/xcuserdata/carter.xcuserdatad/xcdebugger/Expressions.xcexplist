@@ -3,6 +3,60 @@
    version = "1.0">
    <ContextStates>
       <ContextState
+         contextName = "-[DDChildCell addMark]:DDChildCell.m">
+         <PersistentStrings>
+            <PersistentString
+               value = "self.titleLabel.text">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "-[FiltersViewController viewDidLoad]:FiltersViewController.m">
+         <PersistentStrings>
+            <PersistentString
+               value = "self.defaultCategoryFilters">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "-[FiltersViewController tableView:didSelectRowAtIndexPath:]:FiltersViewController.m">
+         <PersistentStrings>
+            <PersistentString
+               value = "indexPath.row">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "-[MainViewController filtersViewController:didChangeFilters:filterableCategories:selectedCategories:]:MainViewController.m">
+         <PersistentStrings>
+            <PersistentString
+               value = "self.filterableCategories">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "-[DDChildCell awakeFromNib]:DDChildCell.m">
+         <PersistentStrings>
+            <PersistentString
+               value = "self.markIconImg">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "-[DDChildCell setSelected:animated:]:DDChildCell.m">
+         <PersistentStrings>
+            <PersistentString
+               value = "_markIconImg">
+            </PersistentString>
+            <PersistentString
+               value = "self.titleLabel.text">
+            </PersistentString>
+            <PersistentString
+               value = "self.markIconImg">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
          contextName = "-[FiltersViewController initCategories]:FiltersViewController.m">
          <PersistentStrings>
             <PersistentString
@@ -20,7 +74,7 @@
                value = "self.filterableCategories">
             </PersistentString>
             <PersistentString
-               value = "distanceFilter[@&quot;value&quot;]">
+               value = "sortByFilter">
             </PersistentString>
             <PersistentString
                value = "sortByFilter objectForKey: @&quot;value&quot;]">
@@ -29,48 +83,7 @@
                value = "sortByFilter[@&quot;value&quot;]">
             </PersistentString>
             <PersistentString
-               value = "sortByFilter">
-            </PersistentString>
-         </PersistentStrings>
-      </ContextState>
-      <ContextState
-         contextName = "-[MainViewController filtersViewController:didChangeFilters:filterableCategories:selectedCategories:]:MainViewController.m">
-         <PersistentStrings>
-            <PersistentString
-               value = "self.filterableCategories">
-            </PersistentString>
-         </PersistentStrings>
-      </ContextState>
-      <ContextState
-         contextName = "-[FiltersViewController initWithNibName:bundle:]:FiltersViewController.m">
-         <PersistentStrings>
-            <PersistentString
-               value = "self.defaultCategoryFilters">
-            </PersistentString>
-         </PersistentStrings>
-      </ContextState>
-      <ContextState
-         contextName = "-[Business initWithDictionary:]:Business.m">
-         <PersistentStrings>
-            <PersistentString
-               value = "dictionary[@&quot;location&quot;][@&quot;address&quot;]">
-            </PersistentString>
-            <PersistentString
-               value = "dictionary[@&quot;location&quot;][@&quot;neighborhoods&quot;]">
-            </PersistentString>
-            <PersistentString
-               value = "[dictionary valueForKeyPath:@&quot;location.address&quot;]">
-            </PersistentString>
-         </PersistentStrings>
-      </ContextState>
-      <ContextState
-         contextName = "-[FiltersViewController tableView:cellForRowAtIndexPath:]:FiltersViewController.m">
-         <PersistentStrings>
-            <PersistentString
-               value = "indexPath.row">
-            </PersistentString>
-            <PersistentString
-               value = "indexPath.row == 0">
+               value = "distanceFilter[@&quot;value&quot;]">
             </PersistentString>
          </PersistentStrings>
       </ContextState>
@@ -92,7 +105,21 @@
          </PersistentStrings>
       </ContextState>
       <ContextState
-         contextName = "-[FiltersViewController tableView:didSelectRowAtIndexPath:]:FiltersViewController.m">
+         contextName = "-[Business initWithDictionary:]:Business.m">
+         <PersistentStrings>
+            <PersistentString
+               value = "[dictionary valueForKeyPath:@&quot;location.address&quot;]">
+            </PersistentString>
+            <PersistentString
+               value = "dictionary[@&quot;location&quot;][@&quot;neighborhoods&quot;]">
+            </PersistentString>
+            <PersistentString
+               value = "dictionary[@&quot;location&quot;][@&quot;address&quot;]">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "-[FiltersViewController tableView:cellForRowAtIndexPath:]:FiltersViewController.m">
          <PersistentStrings>
             <PersistentString
                value = "indexPath.row">
@@ -100,7 +127,7 @@
          </PersistentStrings>
       </ContextState>
       <ContextState
-         contextName = "-[FiltersViewController viewDidLoad]:FiltersViewController.m">
+         contextName = "-[FiltersViewController initWithNibName:bundle:]:FiltersViewController.m">
          <PersistentStrings>
             <PersistentString
                value = "self.defaultCategoryFilters">

@@ -21,6 +21,8 @@
    
     self.arrowIcon.image = downArrow;
     self.selectionStyle = UITableViewCellSelectionStyleNone;
+    self.clipsToBounds = YES;
+    
 }
 
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated {
