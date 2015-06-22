@@ -395,7 +395,7 @@ BOOL dealFilter = NO;
         [tableView deleteRowsAtIndexPaths:arrRows withRowAnimation:UITableViewRowAnimationTop];
         ((DDParentCell *)cell).titleLabel.text = distanceFilter[@"title"];
     } else {
-        [cell setHidden:YES];;
+        [cell setHidden:YES];
         [tableView insertRowsAtIndexPaths:arrRows withRowAnimation:UITableViewRowAnimationTop];
     }
 }
