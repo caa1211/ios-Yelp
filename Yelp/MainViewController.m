@@ -132,14 +132,13 @@ NSMutableArray *baseSearchTerms = nil;
 -(void)filtersViewController:(FiltersViewController *)filtersViewController didChangeFilters:(NSDictionary *)filters
         filterableCategories: (NSMutableArray*)categories
         selectedCategories: (NSMutableSet*)selectedCategories
+        sort:(NSString*)sort
+        radius_filter: (NSString*)radius_filter;
 {
     self.filters = filters;
-
     self.filterableCategories = categories;
     self.selectedCategories = selectedCategories;
-    
     [self fetchBusinessesWithQuery:self.searchTerm params:self.filters];
-    NSLog(@"@=up=%@", filters);
 }
 
 #pragma mark - Private methods

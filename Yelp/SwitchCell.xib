@@ -21,7 +21,7 @@
                         </connections>
                     </switch>
                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="DT5-C3-x2M">
-                        <rect key="frame" x="8" y="14" width="42" height="21"/>
+                        <rect key="frame" x="20" y="14" width="42" height="20.5"/>
                         <fontDescription key="fontDescription" type="system" pointSize="17"/>
                         <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                         <nil key="highlightedColor"/>
@@ -32,7 +32,7 @@
                     <constraint firstItem="ArL-y4-S9h" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="9" id="Tk4-kv-now"/>
                     <constraint firstAttribute="bottom" secondItem="ArL-y4-S9h" secondAttribute="bottom" constant="8.5" id="kt5-k5-VWp"/>
                     <constraint firstAttribute="centerY" secondItem="DT5-C3-x2M" secondAttribute="centerY" id="mJO-W1-LH6"/>
-                    <constraint firstItem="DT5-C3-x2M" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="8" id="v5P-pi-1wN"/>
+                    <constraint firstItem="DT5-C3-x2M" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="20" id="v5P-pi-1wN"/>
                 </constraints>
             </tableViewCellContentView>
             <connections>

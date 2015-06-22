@@ -19,6 +19,18 @@
             <PersistentString
                value = "self.filterableCategories">
             </PersistentString>
+            <PersistentString
+               value = "distanceFilter[@&quot;value&quot;]">
+            </PersistentString>
+            <PersistentString
+               value = "sortByFilter objectForKey: @&quot;value&quot;]">
+            </PersistentString>
+            <PersistentString
+               value = "sortByFilter[@&quot;value&quot;]">
+            </PersistentString>
+            <PersistentString
+               value = "sortByFilter">
+            </PersistentString>
          </PersistentStrings>
       </ContextState>
       <ContextState
@@ -44,10 +56,21 @@
                value = "dictionary[@&quot;location&quot;][@&quot;address&quot;]">
             </PersistentString>
             <PersistentString
-               value = "[dictionary valueForKeyPath:@&quot;location.address&quot;]">
+               value = "dictionary[@&quot;location&quot;][@&quot;neighborhoods&quot;]">
             </PersistentString>
             <PersistentString
-               value = "dictionary[@&quot;location&quot;][@&quot;neighborhoods&quot;]">
+               value = "[dictionary valueForKeyPath:@&quot;location.address&quot;]">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "-[FiltersViewController tableView:cellForRowAtIndexPath:]:FiltersViewController.m">
+         <PersistentStrings>
+            <PersistentString
+               value = "indexPath.row">
+            </PersistentString>
+            <PersistentString
+               value = "indexPath.row == 0">
             </PersistentString>
          </PersistentStrings>
       </ContextState>
@@ -63,6 +86,14 @@
             <PersistentString
                value = "self.businesses">
             </PersistentString>
+            <PersistentString
+               value = "indexPath.row">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "-[FiltersViewController tableView:didSelectRowAtIndexPath:]:FiltersViewController.m">
+         <PersistentStrings>
             <PersistentString
                value = "indexPath.row">
             </PersistentString>
