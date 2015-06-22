@@ -16,7 +16,6 @@
 @property (weak, nonatomic) IBOutlet UITableView *tableView;
 @property(nonatomic, readonly) NSDictionary *filters;
 @property (nonatomic, strong) NSMutableArray *categories;
-@property (nonatomic, strong) NSArray *allCategories;
 @property (nonatomic, strong) NSMutableSet *selectedCategories;
 -(void) initCategories;
 @end
@@ -40,6 +39,7 @@ NSDictionary *distanceFilter = nil;
 NSArray *allSortBy = nil;
 NSMutableArray *selectableSortBy = nil;
 NSDictionary *sortByFilter = nil;
+BOOL dealFilter = NO;
 
 - (void) initVariables {
     
@@ -57,22 +57,45 @@ NSDictionary *sortByFilter = nil;
                     @{@"title": @"Distance", @"value": @1},
                     @{@"title": @"Highest Rated", @"value": @2}
                     ];
-     sortByFilter = allSortBy[0];
+    sortByFilter = allSortBy[0];
 }
 
-- (id) initWithCategories:(NSMutableArray *)categories andSelectedCategories:(NSMutableSet*)selectedCategories {
+-(id) initWithCategories:(NSMutableArray *)categories
+      andSelectedCategories:(NSMutableSet*)selectedCategories
+      sort: (NSString*)sort
+      radius_filter: (NSString*) radius_filter
+      deal: (BOOL)deal {
     
     if ((self = [super initWithNibName:@"FiltersViewController" bundle:nil]))
     {
         if (categories != nil && selectedCategories!=nil){
             self.categories = categories;
             self.selectedCategories = selectedCategories;
+            
         }else{
             self.selectedCategories = [NSMutableSet set];
             self.categories = [[NSMutableArray alloc]init];
-            [self initCategories];
+            [self initCategories:YES];
         }
+        
         [self initVariables];
+        
+        // Restore the selected distance filter
+        for (NSDictionary *distance in allDistance) {
+            if ([radius_filter isEqual:distance[@"value"]]) {
+                distanceFilter = distance;;
+            }
+        }
+        
+        // Restore the selected sortBy filter
+        for (NSDictionary *sortBy in allSortBy) {
+            if ([sort isEqual:sortBy[@"value"]]) {
+                sortByFilter = sortBy;;
+            }
+        }
+        
+        // Restore the selected deal filter
+        dealFilter = deal;
     }
     return self;
 }
@@ -109,6 +132,19 @@ NSDictionary *sortByFilter = nil;
         [filters setObject:categoryFilter forKey:@"category_filter"];
     }
     
+    
+    if(distanceFilter != nil){
+        NSString *distanceFilterStr = distanceFilter[@"value"];
+        [filters setObject:distanceFilterStr forKey:@"radius_filter"];
+    }
+    
+    if(sortByFilter != nil){
+        NSString *sortFilterStr = sortByFilter[@"value"];
+        [filters setObject:sortFilterStr forKey:@"sort"];
+    }
+
+    [filters setObject:[NSNumber numberWithBool:dealFilter] forKey:@"deals_filter"];
+    
     return filters;
 }
 
@@ -122,6 +158,7 @@ NSDictionary *sortByFilter = nil;
                         selectedCategories:self.selectedCategories
                         sort: sortByFilter[@"value"]
                         radius_filter: distanceFilter[@"value"]
+                        deal: dealFilter
      ];
     [self dismissViewControllerAnimated:YES completion:nil];
 }
@@ -131,26 +168,29 @@ NSDictionary *sortByFilter = nil;
     // Dispose of any resources that can be recreated.
 }
 
-- (void) initCategories {
-        
-        NSString *jsonPath = [[NSBundle mainBundle] pathForResource:@"categories"
-                                                             ofType:@"json"];
-        NSData *data = [NSData dataWithContentsOfFile:jsonPath];
-        NSError *error = nil;
-        
-        self.allCategories = [NSJSONSerialization JSONObjectWithData:data
-                                                             options:kNilOptions
-                                                               error:&error];
+- (void) initCategories:(BOOL)isSubset {
+    NSString *categoryFile = @"categories_subset";
     
-        
-        for(NSDictionary *category in self.allCategories){
-            NSArray *parents = category[@"parents"];
-            if (parents.count> 0 && ![parents[0] isEqual:[NSNull null]] && [ (NSString *)parents[0] isEqualToString: @"restaurants"]) {
-                [self.categories addObject:category];
-            }
+    if (!isSubset) {
+        categoryFile = @"categories";
+    }
+    
+    NSString *jsonPath = [[NSBundle mainBundle] pathForResource:categoryFile
+                                                         ofType:@"json"];
+    NSData *data = [NSData dataWithContentsOfFile:jsonPath];
+    NSError *error = nil;
+    
+    NSJSONSerialization *allCategories = [NSJSONSerialization JSONObjectWithData:data
+                                                         options:kNilOptions
+                                                           error:&error];
+    
+    for(NSDictionary *category in allCategories){
+        NSArray *parents = category[@"parents"];
+        if (parents.count> 0 && ![parents[0] isEqual:[NSNull null]] && [ (NSString *)parents[0] isEqualToString: @"restaurants"]) {
+            [self.categories addObject:category];
         }
-    //}
-    // NSLog(@"JSON: %@", json);
+    }
+
 }
 
 /*
@@ -165,13 +205,23 @@ NSDictionary *sortByFilter = nil;
 
 #pragma mark - Switch cell delegate
 -(void) switchCell:(SwitchCell *)cell didUpdateValue:(BOOL)value {
-    NSIndexPath *indexPath = [self.tableView indexPathForCell: cell];
-    if(value){
-        [self.selectedCategories addObject:self.categories[indexPath.row]];
-    
-    }else{
-        [self.selectedCategories removeObject:self.categories[indexPath.row]];
+    NSIndexPath *indexPath = [self.tableView indexPathForCell:cell];
+    NSInteger section = indexPath.section;
+    switch (section) {
+        case DealSection:
+            dealFilter = value;
+        break;
+        case CategorySection:
+        default:
+            if(value){
+                [self.selectedCategories addObject:self.categories[indexPath.row]];
+                
+            }else{
+                [self.selectedCategories removeObject:self.categories[indexPath.row]];
+            }
+        break;
     }
+
 }
 
 #pragma mark - Table view
@@ -197,7 +247,7 @@ NSDictionary *sortByFilter = nil;
             break;
         case CategorySection:
         default:
-            num = 7;
+            num = self.categories.count;
             break;
     }
     return num;
@@ -211,7 +261,7 @@ NSDictionary *sortByFilter = nil;
         case DealSection:
             cell = [tableView dequeueReusableCellWithIdentifier:@"SwitchCell"];
             ((SwitchCell*)cell).delegate = self;
-            ((SwitchCell*)cell).on = [self.selectedCategories containsObject:self.categories[indexPath.row]];
+            ((SwitchCell*)cell).on = dealFilter;
             ((SwitchCell*)cell).titleLabel.text = @"Offering a Deal";
             break;
         case DistanceSection:
@@ -221,8 +271,14 @@ NSDictionary *sortByFilter = nil;
             } else {
                 /* Child cell */
                 cell = [tableView dequeueReusableCellWithIdentifier:@"DDChildCell"];
-                ((DDChildCell*)cell).titleLabel.text = selectableDistance[indexPath.row][@"title"];
-                cell.accessoryType = UITableViewCellAccessoryNone;
+                NSString *title = selectableDistance[indexPath.row][@"title"];
+                ((DDChildCell*)cell).titleLabel.text = title;
+                
+//                ((DDChildCell*)cell).isMarked = NO;
+//                if([title isEqual:distanceFilter[@"title"]]){
+//                   // [((DDChildCell*)cell) addMark];
+//                    ((DDChildCell*)cell).isMarked = YES;
+//                }
             }
             break;
         case SortBySection:
@@ -232,8 +288,14 @@ NSDictionary *sortByFilter = nil;
             } else {
                 /* Child cell */
                 cell = [tableView dequeueReusableCellWithIdentifier:@"DDChildCell"];
-                ((DDChildCell*)cell).titleLabel.text = selectableSortBy[indexPath.row][@"title"];
-                cell.accessoryType = UITableViewCellAccessoryNone;
+                NSString *title = selectableSortBy[indexPath.row][@"title"];
+                ((DDChildCell*)cell).titleLabel.text = title;
+                
+//                ((DDChildCell*)cell).isMarked = NO;
+//                if([title isEqual:sortByFilter[@"title"]]){
+//                    //[((DDChildCell*)cell) addMark];
+//                    ((DDChildCell*)cell).isMarked = YES;
+//                }
             }
             break;
         case CategorySection:
@@ -333,6 +395,7 @@ NSDictionary *sortByFilter = nil;
     } else {
         [tableView insertRowsAtIndexPaths:arrRows withRowAnimation:UITableViewRowAnimationTop];
         ((DDParentCell *)cell).titleLabel.text = distanceFilter[@"title"];
+        //((DDParentCell *)cell).titleLabel.text = allDistance[0][@"title"];
         [self rotateImageView:((DDParentCell *)cell).arrowIcon angle:MMPI];
     }
 }
@@ -356,6 +419,7 @@ NSDictionary *sortByFilter = nil;
     } else {
         [tableView insertRowsAtIndexPaths:arrRows withRowAnimation:UITableViewRowAnimationTop];
         ((DDParentCell *)cell).titleLabel.text = sortByFilter[@"title"];
+        //((DDParentCell *)cell).titleLabel.text = allSortBy[0][@"title"];
         [self rotateImageView:((DDParentCell *)cell).arrowIcon angle:MMPI];
     }
 }
@@ -373,6 +437,7 @@ NSDictionary *sortByFilter = nil;
                 
                 UITableViewCell *cell = [self.tableView cellForRowAtIndexPath:indexPath];
                 [(DDChildCell *)cell addMark];
+
                 NSIndexPath *parentIndexPath = [NSIndexPath indexPathForRow:0 inSection:section];
                [self toggleDistanceSelector:parentIndexPath withTableView:tableView];
                 //NSLog(@"click Child %ld", indexPath.row);
@@ -388,6 +453,7 @@ NSDictionary *sortByFilter = nil;
                 
                 UITableViewCell *cell = [self.tableView cellForRowAtIndexPath:indexPath];
                 [(DDChildCell *)cell addMark];
+
                 NSIndexPath *parentIndexPath = [NSIndexPath indexPathForRow:0 inSection:section];
                 [self toggleSortBySelector:parentIndexPath withTableView:tableView];
                 //NSLog(@"click Child %ld", indexPath.row);

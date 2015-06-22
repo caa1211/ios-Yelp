@@ -1,0 +1,38 @@
+ [
+  {
+  "alias": "bbq",
+  "country_blacklist": [
+                        "AU",
+                        "BR",
+                        "ES"
+                        ],
+  "parents": [
+              "restaurants"
+              ],
+  "title": "Barbeque"
+  },
+  {
+  "alias": "burgers",
+  "parents": [
+              "restaurants"
+              ],
+  "title": "Burgers"
+  },
+  {
+  "alias": "cafes",
+  "country_blacklist": [
+                        "ES"
+                        ],
+  "parents": [
+              "restaurants"
+              ],
+  "title": "Cafes"
+  },
+  {
+  "alias": "pizza",
+  "parents": [
+              "restaurants"
+              ],
+  "title": "Pizza"
+  }
+  ]

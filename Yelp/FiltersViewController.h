@@ -13,26 +13,22 @@
 
 @protocol FiltersViewControllerDelegate <NSObject>
 
-//-(void) filtersViewController: (FiltersViewController *)
-//filtersViewController didChangeFilters: (NSDictionary *) filters;
-
--(void) filtersViewController: (FiltersViewController *)
-filtersViewController didChangeFilters: (NSDictionary *) filters
-filterableCategories: (NSMutableArray*)categories
-selectedCategories: (NSMutableSet*)selectedCategories;
-
 -(void) filtersViewController: (FiltersViewController *)
 filtersViewController didChangeFilters: (NSDictionary *) filters
          filterableCategories: (NSMutableArray*)categories
          selectedCategories: (NSMutableSet*)selectedCategories
          sort:(NSString*)sort
-         radius_filter: (NSString*)radius_filter;
-
+         radius_filter: (NSString*)radius_filter
+         deal: (BOOL)deal;
 @end
 
 @interface FiltersViewController : UIViewController
 
 @property (nonatomic, weak) id<FiltersViewControllerDelegate>delegate;
 
--(id) initWithCategories:(NSMutableArray *)categories andSelectedCategories:(NSMutableSet*)selectedCategories;
+-(id) initWithCategories:(NSMutableArray *)categories
+   andSelectedCategories:(NSMutableSet*)selectedCategories
+   sort: (NSString*)sort
+   radius_filter: (NSString*) radius_filter
+   deal: (BOOL)deal;
 @end

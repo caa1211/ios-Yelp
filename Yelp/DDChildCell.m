@@ -13,6 +13,7 @@
 
 @implementation DDChildCell
 
+
 -(IBAction) addMark {
     NIKFontAwesomeIconFactory *factory = [NIKFontAwesomeIconFactory tabBarItemIconFactory];
     //[factory setColors:@[ UIColorFromRGB(0xd4d4d4)]];
@@ -25,11 +26,14 @@
     // Initialization code
 }
 
+
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated {
     [super setSelected:selected animated:animated];
     
     NIKFontAwesomeIconFactory *factory = [NIKFontAwesomeIconFactory tabBarItemIconFactory];
+    
     [factory setColors:@[ UIColorFromRGB(0xd4d4d4)]];
+
     UIImage *markIcon = [factory createImageForIcon:NIKFontAwesomeIconCheckCircleO];
     self.markIcon.image = markIcon;
 

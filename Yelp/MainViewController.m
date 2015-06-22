@@ -31,6 +31,11 @@ NSString * const kYelpTokenSecret = @"RJjIG-z0KeEFVGugtepuDc8grwo";
 @property (nonatomic, strong) NSMutableArray *filterableCategories;
 @property (nonatomic, strong) NSMutableSet *selectedCategories;
 -(void)fetchBusinessesWithQuery:(NSString *)query params:(NSDictionary *)params;
+
+@property (nonatomic, strong)NSString* sort;
+@property (nonatomic, strong)NSString* radius_filter;
+@property (nonatomic, assign)BOOL deal;
+
 @end
 
 
@@ -133,11 +138,15 @@ NSMutableArray *baseSearchTerms = nil;
         filterableCategories: (NSMutableArray*)categories
         selectedCategories: (NSMutableSet*)selectedCategories
         sort:(NSString*)sort
-        radius_filter: (NSString*)radius_filter;
+        radius_filter: (NSString*)radius_filter
+        deal:(BOOL)deal;
 {
     self.filters = filters;
     self.filterableCategories = categories;
     self.selectedCategories = selectedCategories;
+    self.sort = sort;
+    self.radius_filter = radius_filter;
+    self.deal = deal;
     [self fetchBusinessesWithQuery:self.searchTerm params:self.filters];
 }
 
@@ -148,7 +157,10 @@ NSMutableArray *baseSearchTerms = nil;
     
     FiltersViewController *vc = [[FiltersViewController alloc]
                                  initWithCategories:self.filterableCategories
-                                 andSelectedCategories:self.selectedCategories];
+                                 andSelectedCategories:self.selectedCategories
+                                 sort: self.sort
+                                 radius_filter: self.radius_filter
+                                 deal: self.deal];
     vc.delegate = self;
 
     UINavigationController *nvc = [[UINavigationController alloc]initWithRootViewController:vc];
