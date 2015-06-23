@@ -39,7 +39,6 @@ NSDictionary *sortByFilter = nil;
 BOOL dealFilter = NO;
 
 - (void) initVariables {
-    
     selectableDistance = @[
                     @{@"title": @"Auto", @"value": @0},
                     @{@"title": @"0.3 miles", @"value": @483},
@@ -245,7 +244,13 @@ BOOL dealFilter = NO;
             }
             break;
         case ShowMoreSection:
-            num = 1;
+            //<##>
+            if (self.categories.count == 0 || self.categories.count > 10){
+                // All categories have been shown
+                num = 0;
+            }else{
+                num = 1;
+            }
             break;
         case CategorySection:
         default:
@@ -298,7 +303,7 @@ BOOL dealFilter = NO;
             break;
             
         case ShowMoreSection:
-            cell = [tableView dequeueReusableCellWithIdentifier:@"ShowMoreCell"];
+                cell = [tableView dequeueReusableCellWithIdentifier:@"ShowMoreCell"];
             break;
             
         case CategorySection:
@@ -465,7 +470,8 @@ BOOL dealFilter = NO;
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     NSInteger section = indexPath.section;
- NSMutableArray *arrRows = [NSMutableArray array];
+    NSMutableArray *arrRows = [NSMutableArray array];
+
     switch (section) {
         case DistanceSection:
             distanceFilter = [self clickDDOnTable:tableView toggleIndex:indexPath withDataArray:selectableDistance];
@@ -482,10 +488,12 @@ BOOL dealFilter = NO;
                 NSIndexPath *tmpIndexPath = [NSIndexPath indexPathForRow:i inSection:CategorySection];
                 [arrRows addObject:tmpIndexPath];
             }
-            self.categories = [[NSMutableArray alloc]init];
+            // Delete "show all" button
+            [arrRows addObject:indexPath];
+            [self.categories removeAllObjects];
             [tableView deleteRowsAtIndexPaths:arrRows withRowAnimation:UITableViewRowAnimationFade];
             
-            // Load all categories in to table
+            // Reload all categories into table
             arrRows = [NSMutableArray array];
             [self initCategories:NO];
             for (int i = 0; i < self.categories.count; i++) {
