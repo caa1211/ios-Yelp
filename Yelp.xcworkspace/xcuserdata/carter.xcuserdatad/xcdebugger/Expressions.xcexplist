@@ -27,6 +27,17 @@
          </PersistentStrings>
       </ContextState>
       <ContextState
+         contextName = "-[FiltersViewController clickDDOnTable:toggleIndex:withDataArray:forFilter:]:FiltersViewController.m">
+         <PersistentStrings>
+            <PersistentString
+               value = "distanceFilter">
+            </PersistentString>
+            <PersistentString
+               value = "filter">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
          contextName = "-[MainViewController filtersViewController:didChangeFilters:filterableCategories:selectedCategories:]:MainViewController.m">
          <PersistentStrings>
             <PersistentString
@@ -46,13 +57,13 @@
          contextName = "-[DDChildCell setSelected:animated:]:DDChildCell.m">
          <PersistentStrings>
             <PersistentString
+               value = "self.markIconImg">
+            </PersistentString>
+            <PersistentString
                value = "_markIconImg">
             </PersistentString>
             <PersistentString
                value = "self.titleLabel.text">
-            </PersistentString>
-            <PersistentString
-               value = "self.markIconImg">
             </PersistentString>
          </PersistentStrings>
       </ContextState>
@@ -74,7 +85,7 @@
                value = "self.filterableCategories">
             </PersistentString>
             <PersistentString
-               value = "sortByFilter">
+               value = "distanceFilter[@&quot;value&quot;]">
             </PersistentString>
             <PersistentString
                value = "sortByFilter objectForKey: @&quot;value&quot;]">
@@ -83,7 +94,7 @@
                value = "sortByFilter[@&quot;value&quot;]">
             </PersistentString>
             <PersistentString
-               value = "distanceFilter[@&quot;value&quot;]">
+               value = "sortByFilter">
             </PersistentString>
          </PersistentStrings>
       </ContextState>
@@ -108,13 +119,13 @@
          contextName = "-[Business initWithDictionary:]:Business.m">
          <PersistentStrings>
             <PersistentString
+               value = "dictionary[@&quot;location&quot;][@&quot;address&quot;]">
+            </PersistentString>
+            <PersistentString
                value = "[dictionary valueForKeyPath:@&quot;location.address&quot;]">
             </PersistentString>
             <PersistentString
                value = "dictionary[@&quot;location&quot;][@&quot;neighborhoods&quot;]">
-            </PersistentString>
-            <PersistentString
-               value = "dictionary[@&quot;location&quot;][@&quot;address&quot;]">
             </PersistentString>
          </PersistentStrings>
       </ContextState>

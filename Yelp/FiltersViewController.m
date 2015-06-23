@@ -414,14 +414,15 @@ BOOL dealFilter = NO;
     }
 }
 
--(void) clickDDOnTable:(UITableView *)tableView toggleIndex:(NSIndexPath*)indexPath withDataArray:(NSArray*)selectableAry
-  forFilter:(NSDictionary*)filter
+-(NSDictionary *) clickDDOnTable:(UITableView *)tableView toggleIndex:(NSIndexPath*)indexPath withDataArray:(NSArray*)selectableAry
 {
+    NSDictionary *filter = nil;
     NSInteger section = indexPath.section;
-    NSString *rootTitle = filter[@"title"];
+    NSString *rootTitle = nil;
+    
     if (indexPath.row == 0) {
         // Click Parent row
-        [self toggleDDHeadOnTable:tableView withIndexPath:indexPath  onRootTitle:rootTitle];
+        [self toggleDDHeadOnTable:tableView withIndexPath:indexPath  onRootTitle:nil];
     }else {
         // Click Child row
         filter = selectableAry[indexPath.row-1];
@@ -436,6 +437,7 @@ BOOL dealFilter = NO;
 
         //NSLog(@"click Child %ld", indexPath.row);
     }
+    return filter;
 }
 //===========End==============
 
@@ -446,11 +448,11 @@ BOOL dealFilter = NO;
 
     switch (section) {
         case DistanceSection:
-            [self clickDDOnTable:tableView toggleIndex:indexPath withDataArray:selectableDistance forFilter:distanceFilter];
+            distanceFilter = [self clickDDOnTable:tableView toggleIndex:indexPath withDataArray:selectableDistance];
             break;
             
         case SortBySection:
-            [self clickDDOnTable:tableView toggleIndex:indexPath withDataArray:selectableSortBy forFilter:sortByFilter];
+            sortByFilter = [self clickDDOnTable:tableView toggleIndex:indexPath withDataArray:selectableSortBy];
             break;
     }
 }
