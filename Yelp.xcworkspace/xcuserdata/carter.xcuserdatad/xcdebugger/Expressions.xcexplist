@@ -145,5 +145,13 @@
             </PersistentString>
          </PersistentStrings>
       </ContextState>
+      <ContextState
+         contextName = "-[FiltersViewController tableView:numberOfRowsInSection:]:FiltersViewController.m">
+         <PersistentStrings>
+            <PersistentString
+               value = "self.categories.count">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
    </ContextStates>
 </VariablesViewState>

@@ -10,7 +10,7 @@
 #import "SwitchCell.h"
 #import "DDParentCell.h"
 #import "DDChildCell.h"
-
+#import "ShowMoreCell.h"
 @interface FiltersViewController () <UITableViewDataSource, UITableViewDelegate, SwitchCellDelegate>
 @property (weak, nonatomic) IBOutlet UITableView *tableView;
 @property(nonatomic, readonly) NSDictionary *filters;
@@ -26,7 +26,8 @@ enum {
     DealSection = 0,
     DistanceSection,
     SortBySection,
-    CategorySection
+    CategorySection,
+    ShowMoreSection
 };
 
 NSMutableIndexSet *expandedSections;
@@ -111,6 +112,8 @@ BOOL dealFilter = NO;
     [self.tableView registerNib:[UINib nibWithNibName:@"DDParentCell" bundle:nil] forCellReuseIdentifier:@"DDParentCell"];
     
     [self.tableView registerNib:[UINib nibWithNibName:@"DDChildCell" bundle:nil] forCellReuseIdentifier:@"DDChildCell"];
+    
+        [self.tableView registerNib:[UINib nibWithNibName:@"ShowMoreCell" bundle:nil] forCellReuseIdentifier:@"ShowMoreCell"];
     
      expandedSections = [[NSMutableIndexSet alloc] init];
 }
@@ -208,7 +211,6 @@ BOOL dealFilter = NO;
             dealFilter = value;
         break;
         case CategorySection:
-        default:
             if(value){
                 [self.selectedCategories addObject:self.categories[indexPath.row]];
                 
@@ -230,17 +232,20 @@ BOOL dealFilter = NO;
         case DistanceSection:
             if ([expandedSections containsIndex:section]) {
                 // The value should be the number of submenu + 1(menu head)
-                return 6;
+                num = 6;
             } else {
-                return 1;
+                num = 1;
             }
             break;
         case SortBySection:
             if ([expandedSections containsIndex:section]) {
-                return 4;
+                num = 4;
             } else {
-                return 1;
+                num = 1;
             }
+            break;
+        case ShowMoreSection:
+            num = 1;
             break;
         case CategorySection:
         default:
@@ -291,12 +296,23 @@ BOOL dealFilter = NO;
                 }
             }
             break;
+            
+        case ShowMoreSection:
+            cell = [tableView dequeueReusableCellWithIdentifier:@"ShowMoreCell"];
+            break;
+            
         case CategorySection:
         default:
             cell = [tableView dequeueReusableCellWithIdentifier:@"SwitchCell"];
             ((SwitchCell*)cell).delegate = self;
             ((SwitchCell*)cell).on = [self.selectedCategories containsObject:self.categories[indexPath.row]];
             ((SwitchCell*)cell).titleLabel.text = self.categories[indexPath.row][@"title"];
+            
+            if (indexPath.row == self.categories.count -1){
+                cell.separatorInset = UIEdgeInsetsZero;
+                cell.layoutMargins = UIEdgeInsetsZero;
+                cell.preservesSuperviewLayoutMargins = NO;
+            }
             break;
     }
     
@@ -320,7 +336,7 @@ BOOL dealFilter = NO;
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
     switch (section) {
         case DealSection:
-            return @" ";
+            return nil;
             break;
             
         case DistanceSection:
@@ -329,6 +345,10 @@ BOOL dealFilter = NO;
             
         case SortBySection:
             return @"Sort By";
+            break;
+            
+        case ShowMoreSection:
+            return nil;
             break;
             
         case CategorySection:
@@ -445,7 +465,7 @@ BOOL dealFilter = NO;
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     NSInteger section = indexPath.section;
-
+ NSMutableArray *arrRows = [NSMutableArray array];
     switch (section) {
         case DistanceSection:
             distanceFilter = [self clickDDOnTable:tableView toggleIndex:indexPath withDataArray:selectableDistance];
@@ -454,11 +474,32 @@ BOOL dealFilter = NO;
         case SortBySection:
             sortByFilter = [self clickDDOnTable:tableView toggleIndex:indexPath withDataArray:selectableSortBy];
             break;
+            
+        case ShowMoreSection:
+            //<##>
+            // Remove subset categories
+            for (int i = 0; i < self.categories.count; i++) {
+                NSIndexPath *tmpIndexPath = [NSIndexPath indexPathForRow:i inSection:CategorySection];
+                [arrRows addObject:tmpIndexPath];
+            }
+            self.categories = [[NSMutableArray alloc]init];
+            [tableView deleteRowsAtIndexPaths:arrRows withRowAnimation:UITableViewRowAnimationFade];
+            
+            // Load all categories in to table
+            arrRows = [NSMutableArray array];
+            [self initCategories:NO];
+            for (int i = 0; i < self.categories.count; i++) {
+                NSIndexPath *tmpIndexPath = [NSIndexPath indexPathForRow:i inSection:CategorySection];
+                [arrRows addObject:tmpIndexPath];
+            }
+            [tableView insertRowsAtIndexPaths:arrRows withRowAnimation:UITableViewRowAnimationFade];
+            
+            break;
     }
 }
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-    return 4;
+    return 5;
 }
 
 
@@ -466,7 +507,12 @@ BOOL dealFilter = NO;
 
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
 {
-    return 30;
+    if([self tableView:self.tableView titleForHeaderInSection:section] == nil){
+        return 0;
+    }
+    else{
+        return 30;
+    }
 }
 
 -(UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section{
