@@ -12,12 +12,10 @@
 #import "DDChildCell.h"
 
 @interface FiltersViewController () <UITableViewDataSource, UITableViewDelegate, SwitchCellDelegate>
-
 @property (weak, nonatomic) IBOutlet UITableView *tableView;
 @property(nonatomic, readonly) NSDictionary *filters;
 @property (nonatomic, strong) NSMutableArray *categories;
 @property (nonatomic, strong) NSMutableSet *selectedCategories;
--(void) initCategories;
 @end
 
 #define MMPI 3.1415926
@@ -182,7 +180,7 @@ BOOL dealFilter = NO;
                                                          options:kNilOptions
                                                            error:&error];
     
-    for(NSDictionary *category in allCategories){
+    for(NSDictionary *category in (NSArray*)allCategories){
         NSArray *parents = category[@"parents"];
         if (parents.count> 0 && ![parents[0] isEqual:[NSNull null]] && [ (NSString *)parents[0] isEqualToString: @"restaurants"]) {
             [self.categories addObject:category];
@@ -231,6 +229,7 @@ BOOL dealFilter = NO;
             break;
         case DistanceSection:
             if ([expandedSections containsIndex:section]) {
+                // The value should be the number of submenu + 1(menu head)
                 return 6;
             } else {
                 return 1;
@@ -303,11 +302,11 @@ BOOL dealFilter = NO;
     
     if (indexPath.row == 0) {
         /* Parent cell */
-        NSLog(@"Parent");
+        // NSLog(@"Parent");
         
     } else {
         /* Child cell */
-        NSLog(@"Child");
+        // NSLog(@"Child");
     }
     
     
@@ -339,29 +338,6 @@ BOOL dealFilter = NO;
     }
 }
 
-- (NSMutableArray *) subTableRows:(NSInteger)section
-                     withTableView:(UITableView*)tableView
-                     andExpandedStatus:(BOOL)currentlyExpanded{
-    NSInteger rows;
-    NSMutableArray *arrRows = [NSMutableArray array];
-    
-    if (currentlyExpanded) {
-        /* Child cell for this parent */
-        rows = [self tableView:tableView numberOfRowsInSection:section];
-        [expandedSections removeIndex:section];
-    } else {
-        [expandedSections addIndex:section];
-        rows = [self tableView:tableView numberOfRowsInSection:section];
-    }
-    
-    for (int i = 1; i < rows; i++) {
-        NSIndexPath *tmpIndexPath = [NSIndexPath indexPathForRow:i inSection:section];
-        [arrRows addObject:tmpIndexPath];
-    }
-    return arrRows;
-
-}
-
 //- (void)rotateImageView:(UIImageView*)imageView angle:(CGFloat)angle
 //{
 //    [UIView animateWithDuration:0.3 delay:0 options:UIViewAnimationOptionCurveLinear animations:^{
@@ -382,42 +358,6 @@ BOOL dealFilter = NO;
     }
 }
 
-- (void) toggleDistanceSelector:(NSIndexPath *)indexPath withTableView:(UITableView*)tableView{
-    NSInteger section = indexPath.section;
-    BOOL currentlyExpanded = [expandedSections containsIndex:section];
-    
-    NSMutableArray *arrRows = [self subTableRows:section withTableView:tableView andExpandedStatus:currentlyExpanded];
-
-    UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
-    
-    if (currentlyExpanded) {
-        [cell setHidden:NO];
-        [tableView deleteRowsAtIndexPaths:arrRows withRowAnimation:UITableViewRowAnimationTop];
-        ((DDParentCell *)cell).titleLabel.text = distanceFilter[@"title"];
-    } else {
-        [cell setHidden:YES];
-        [tableView insertRowsAtIndexPaths:arrRows withRowAnimation:UITableViewRowAnimationTop];
-    }
-}
-
-- (void) toggleSortBySelector:(NSIndexPath *)indexPath withTableView:(UITableView*)tableView{
-    NSInteger section = indexPath.section;
-    BOOL currentlyExpanded = [expandedSections containsIndex:section];
-    
-    NSMutableArray *arrRows = [self subTableRows:section withTableView:tableView andExpandedStatus:currentlyExpanded];
-
-    UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
-    
-    if (currentlyExpanded) {
-        [cell setHidden:NO];
-        [tableView deleteRowsAtIndexPaths:arrRows withRowAnimation:UITableViewRowAnimationTop];
-        ((DDParentCell *)cell).titleLabel.text = sortByFilter[@"title"];
-    } else {
-        [cell setHidden:YES];
-        [tableView insertRowsAtIndexPaths:arrRows withRowAnimation:UITableViewRowAnimationTop];
-    }
-}
-
 
 - (void) tableViewRemoveAllMarks:(UITableView *)tableView bySection:(NSInteger)section {
     for (NSInteger i = 1; i < [tableView numberOfRowsInSection:section]; ++i){
@@ -426,40 +366,91 @@ BOOL dealFilter = NO;
     }
 }
 
+
+#pragma mark - Toggle DD Menu ===========
+//===========Start==============
+- (NSMutableArray *) collectSubRowsOnSection:(NSInteger)section
+                     withTableView:(UITableView*)tableView
+                     andExpandedStatus:(BOOL)currentlyExpanded{
+    NSInteger rows;
+    NSMutableArray *arrRows = [NSMutableArray array];
+    
+    if (currentlyExpanded) {
+        /* collect child rows for this section */
+        rows = [self tableView:tableView numberOfRowsInSection:section];
+        [expandedSections removeIndex:section];
+    } else {
+        /* collect parent row for this section */
+        [expandedSections addIndex:section];
+        rows = [self tableView:tableView numberOfRowsInSection:section];
+    }
+    
+    for (int i = 1; i < rows; i++) {
+        NSIndexPath *tmpIndexPath = [NSIndexPath indexPathForRow:i inSection:section];
+        [arrRows addObject:tmpIndexPath];
+    }
+    return arrRows;
+}
+
+- (void) toggleDDHeadOnTable:(UITableView*)tableView withIndexPath:(NSIndexPath *)indexPath
+         onRootTitle:(NSString *)rootTitle
+{
+    
+    NSInteger section = indexPath.section;
+    BOOL currentlyExpanded = [expandedSections containsIndex:section];
+    NSMutableArray *arrRows = [self collectSubRowsOnSection:section withTableView:tableView andExpandedStatus:currentlyExpanded];
+    UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
+    
+    if (currentlyExpanded) {
+        // will get all child rows in arrRows, all of them should be deleted befor collapse dd
+        [cell setHidden:NO];
+        [tableView deleteRowsAtIndexPaths:arrRows withRowAnimation:UITableViewRowAnimationTop];
+        ((DDParentCell *)cell).titleLabel.text = rootTitle;
+        
+    } else {
+        // will get all child rows in arrRows, all of them should be added befor expand dd
+        [cell setHidden:YES];
+        [tableView insertRowsAtIndexPaths:arrRows withRowAnimation:UITableViewRowAnimationTop];
+    }
+}
+
+-(void) clickDDOnTable:(UITableView *)tableView toggleIndex:(NSIndexPath*)indexPath withDataArray:(NSArray*)selectableAry
+  forFilter:(NSDictionary*)filter
+{
+    NSInteger section = indexPath.section;
+    NSString *rootTitle = filter[@"title"];
+    if (indexPath.row == 0) {
+        // Click Parent row
+        [self toggleDDHeadOnTable:tableView withIndexPath:indexPath  onRootTitle:rootTitle];
+    }else {
+        // Click Child row
+        filter = selectableAry[indexPath.row-1];
+        rootTitle = filter[@"title"];
+        
+        [self tableViewRemoveAllMarks: tableView bySection:section];
+        UITableViewCell *cell = [self.tableView cellForRowAtIndexPath:indexPath];
+        [(DDChildCell *)cell addMark];
+        
+        NSIndexPath *parentIndexPath = [NSIndexPath indexPathForRow:0 inSection:section];
+        [self toggleDDHeadOnTable:tableView withIndexPath:parentIndexPath  onRootTitle:rootTitle];
+
+        //NSLog(@"click Child %ld", indexPath.row);
+    }
+}
+//===========End==============
+
+
+
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     NSInteger section = indexPath.section;
 
     switch (section) {
         case DistanceSection:
-            if (indexPath.row == 0) {
-                [self toggleDistanceSelector:indexPath withTableView:tableView];
-            }else {
-                distanceFilter = selectableDistance[indexPath.row-1];
-
-                [self tableViewRemoveAllMarks: tableView bySection:section];
-                UITableViewCell *cell = [self.tableView cellForRowAtIndexPath:indexPath]; 
-                [(DDChildCell *)cell addMark];
-
-                NSIndexPath *parentIndexPath = [NSIndexPath indexPathForRow:0 inSection:section];
-               [self toggleDistanceSelector:parentIndexPath withTableView:tableView];
-                //NSLog(@"click Child %ld", indexPath.row);
-            }
+            [self clickDDOnTable:tableView toggleIndex:indexPath withDataArray:selectableDistance forFilter:distanceFilter];
             break;
             
         case SortBySection:
-            if (indexPath.row == 0) {
-                [self toggleSortBySelector:indexPath withTableView:tableView];
-            }else {
-                sortByFilter = selectableSortBy[indexPath.row-1];
-                
-                [self tableViewRemoveAllMarks: tableView bySection:section];
-                UITableViewCell *cell = [self.tableView cellForRowAtIndexPath:indexPath];
-                [(DDChildCell *)cell addMark];
-
-                NSIndexPath *parentIndexPath = [NSIndexPath indexPathForRow:0 inSection:section];
-                [self toggleSortBySelector:parentIndexPath withTableView:tableView];
-                //NSLog(@"click Child %ld", indexPath.row);
-            }
+            [self clickDDOnTable:tableView toggleIndex:indexPath withDataArray:selectableSortBy forFilter:sortByFilter];
             break;
     }
 }
@@ -473,14 +464,14 @@ BOOL dealFilter = NO;
 
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
 {
-    return 40;
+    return 30;
 }
 
 -(UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section{
-    UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, 50.0f)];
+    UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, 30.0f)];
 
     [view setBackgroundColor:UIColorFromRGB(0xf7f7f7)];
-    UILabel *lbl = [[UILabel alloc] initWithFrame:CGRectMake(10, 0, 150, 40)];
+    UILabel *lbl = [[UILabel alloc] initWithFrame:CGRectMake(10, 0, 150, 30)];
     [lbl setFont:[UIFont boldSystemFontOfSize:15]];
     [lbl setTextColor:[UIColor grayColor]];
     [view addSubview:lbl];
