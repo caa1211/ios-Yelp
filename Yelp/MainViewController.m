@@ -11,6 +11,7 @@
 #import "Business.h"
 #import "BusinessCell.h"
 #import "FiltersViewController.h"
+#import "MapViewController.h"
 #import <TSMessage.h>
 #import <SVProgressHUD.h>
 #import <UIScrollView+InfiniteScroll.h>
@@ -31,6 +32,8 @@ NSString * const kYelpTokenSecret = @"RJjIG-z0KeEFVGugtepuDc8grwo";
 @property (nonatomic, strong) NSString *searchTerm;
 @property (nonatomic, strong) NSMutableArray *filterableCategories;
 @property (nonatomic, strong) NSMutableSet *selectedCategories;
+@property (nonatomic, strong) UINavigationController *naviController;
+
 -(void)fetchBusinessesWithQuery:(NSString *)query params:(NSDictionary *)params;
 
 @property (nonatomic, strong)NSString* sort;
@@ -132,7 +135,7 @@ NSMutableArray *baseSearchTerms = nil;
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    
+    _naviController = [[UINavigationController alloc]init];
     self.tableView.delegate = self;
     self.tableView.dataSource = self;
     [self.tableView registerNib:[UINib nibWithNibName:@"BusinessCell" bundle:nil]
@@ -202,8 +205,6 @@ NSMutableArray *baseSearchTerms = nil;
 #pragma mark - Private methods
 
 -(void) onFilterButton {
-    //FiltersViewController *vc = [[FiltersViewController alloc] init];
-    
     FiltersViewController *vc = [[FiltersViewController alloc]
                                  initWithCategories:self.filterableCategories
                                  andSelectedCategories:self.selectedCategories
@@ -211,9 +212,17 @@ NSMutableArray *baseSearchTerms = nil;
                                  radius_filter: self.radius_filter
                                  deal: self.deal];
     vc.delegate = self;
+    [_naviController pushViewController:vc animated:YES];
+    _naviController.modalTransitionStyle=UIModalTransitionStyleCoverVertical;
+    [self presentViewController:_naviController animated:YES completion:nil];
+    
+}
 
-    UINavigationController *nvc = [[UINavigationController alloc]initWithRootViewController:vc];
-    [self presentViewController:nvc animated:YES completion:nil];
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    MapViewController *mvc = [[MapViewController alloc] initWithBusiness:self.businesses[indexPath.row]];
+    [_naviController pushViewController:mvc animated:YES];
+    _naviController.modalTransitionStyle=UIModalTransitionStyleFlipHorizontal;
+    [self presentViewController:_naviController animated:YES completion:nil];
 }
 
 

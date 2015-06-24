@@ -9,6 +9,7 @@
 #import "BusinessCell.h"
 #import "UIImageView+AFNetworking.h"
 
+
 @interface BusinessCell()
 @property (weak, nonatomic) IBOutlet UIImageView *thumbImageView;
 @property (weak, nonatomic) IBOutlet UILabel *nameLabel;

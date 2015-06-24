@@ -90,6 +90,17 @@
          </PersistentStrings>
       </ContextState>
       <ContextState
+         contextName = "-[MainViewController tableView:didSelectRowAtIndexPath:]:MainViewController.m">
+         <PersistentStrings>
+            <PersistentString
+               value = "self.businesses[indexPath.row]">
+            </PersistentString>
+            <PersistentString
+               value = "self.businesses">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
          contextName = "-[FiltersViewController onSearch]:FiltersViewController.m">
          <PersistentStrings>
             <PersistentString

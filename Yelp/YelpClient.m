@@ -24,6 +24,7 @@
     
     // For additional parameters, see http://www.yelp.com/developers/documentation/v2/search_api
     NSDictionary *defaults = @{@"term": term, @"ll" : @"37.774866,-122.394556"};
+    //24.804235, 120.969764
     NSMutableDictionary *allParameters = [defaults mutableCopy];
     if (params) {
         [allParameters addEntriesFromDictionary:params];

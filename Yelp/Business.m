@@ -35,6 +35,12 @@
         self.address = [NSString stringWithFormat:@"%@, %@", street, neighborhood];
         float milesPerMeter = 0.000621371;
         self.distance = [dictionary[@"distance"] floatValue] * milesPerMeter;
+        
+        self.latitude = [[dictionary valueForKeyPath:@"location.coordinate.latitude"] doubleValue];
+        self.longitude = [[dictionary valueForKeyPath:@"location.coordinate.longitude"] doubleValue];
+        
+        self.snippetText = [dictionary valueForKeyPath:@"snippet_text"];
+
     }
     return self;
 }

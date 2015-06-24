@@ -16,7 +16,11 @@
 @property (nonatomic, assign) NSInteger numReviews;
 @property (nonatomic, strong) NSString *address;
 @property (nonatomic, strong) NSString *categories;
+@property (nonatomic, strong) NSString *snippetText;
 @property (nonatomic, assign) CGFloat distance;
+@property (assign, nonatomic) double latitude;
+@property (assign, nonatomic) double longitude;
+
 
 + (NSArray *)businessWithDictionaries: (NSArray *)dictionaries;
 
