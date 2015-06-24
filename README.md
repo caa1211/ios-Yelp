@@ -31,11 +31,5 @@ Time spent: 8 hours
 
 ### Walkthrough
 
-![Video Walkthrough](preview.gif)
-
-### Filter page
-![Filter page](preview_filter.gif)
-
-### Infinite scroll
-![Infinite scroll](preview_scroll.gif)
+![Video Walkthrough](preview_all.gif)
 
