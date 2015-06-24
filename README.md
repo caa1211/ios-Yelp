@@ -22,7 +22,7 @@ Time spent: 8 hours
 #### Optional
 
 - [ ] Search results page
-   - [ ] Infinite scroll for restaurant results
+   - [X] Infinite scroll for restaurant results
    - [ ] Implement map view of restaurant results
 - [X] Filter page
    - [X] Radius filter should expand as in the real Yelp app
@@ -35,3 +35,7 @@ Time spent: 8 hours
 
 ### Filter page
 ![Filter page](preview_filter.gif)
+
+### Infinite scroll
+![Infinite scroll](preview_scroll.gif)
+

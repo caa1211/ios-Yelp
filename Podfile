@@ -5,3 +5,4 @@ pod 'BDBOAuth1Manager'
 pod "SVProgressHUD"
 pod "TSMessages"
 pod "FontAwesomeIconFactory"
+pod "UIScrollView-InfiniteScroll"

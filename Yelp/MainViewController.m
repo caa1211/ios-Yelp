@@ -13,6 +13,7 @@
 #import "FiltersViewController.h"
 #import <TSMessage.h>
 #import <SVProgressHUD.h>
+#import <UIScrollView+InfiniteScroll.h>
 
 NSString * const kYelpConsumerKey = @"eqGmxYAsZMnl9C3GKs137w";
 NSString * const kYelpConsumerSecret = @"xfovXjjqxr5civdJp0sy1p1tq5k";
@@ -23,7 +24,7 @@ NSString * const kYelpTokenSecret = @"RJjIG-z0KeEFVGugtepuDc8grwo";
 
 @property (weak, nonatomic) IBOutlet UITableView *tableView;
 @property (nonatomic, strong) YelpClient *client;
-@property (nonatomic, strong) NSArray *businesses;
+@property (nonatomic, strong) NSMutableArray *businesses;
 @property (nonatomic, strong) UISearchBar *searchBar;
 @property (nonatomic, strong) NSDictionary *filters;
 @property (nonatomic, strong) NSTimer *searchDelayer;
@@ -35,6 +36,8 @@ NSString * const kYelpTokenSecret = @"RJjIG-z0KeEFVGugtepuDc8grwo";
 @property (nonatomic, strong)NSString* sort;
 @property (nonatomic, strong)NSString* radius_filter;
 @property (nonatomic, assign)BOOL deal;
+@property (nonatomic, assign)NSInteger scrollLimit;
+@property (nonatomic, assign)NSInteger scrollOffset;
 
 @end
 
@@ -44,12 +47,40 @@ NSString * const kYelpTokenSecret = @"RJjIG-z0KeEFVGugtepuDc8grwo";
 NSMutableArray *baseSearchTerms = nil;
 
 
--(void)fetchBusinessesWithQuery:(NSString *)query params:(NSDictionary *)params {
-    [SVProgressHUD showWithMaskType:SVProgressHUDMaskTypeBlack];
-    [self.client searchWithTerm:query params:params success:^(AFHTTPRequestOperation *operation, id response) {
+-(void)fetchBusinessesWithQuery:(NSString *)query params:(NSDictionary *)params isInfiniteScrolling:(BOOL)isInfiniteScrolling{
+    
+    if(!isInfiniteScrolling){
+        // Means this is a new fetching
+        [self.businesses removeAllObjects];
+        [SVProgressHUD showWithMaskType:SVProgressHUDMaskTypeBlack];
+        self.scrollOffset = 0;
+    }else{
+    
+    }
+    
+    NSInteger limit = self.scrollLimit;
+    NSInteger offset = self.scrollOffset;
+    
+    self.scrollOffset = self.scrollLimit +offset;
+    
+    NSDictionary *scrollParams = @{ @"limit" : [NSNumber numberWithInteger:limit],
+                                    @"offset": [NSNumber numberWithInteger:offset]
+                                };
+    
+    NSMutableDictionary *newParams = [params mutableCopy];
+    
+    if (newParams) {
+        //allParameters add :scrollParams];
+         [newParams addEntriesFromDictionary:scrollParams];
+    }else {
+        newParams = [[NSMutableDictionary alloc]init];
+         [newParams addEntriesFromDictionary:scrollParams];
+    }
+    [self.client searchWithTerm:query params:newParams success:^(AFHTTPRequestOperation *operation, id response) {
         // NSLog(@"response: %@", response);
         NSArray *businessesDictionary = response[@"businesses"];
-        self.businesses = [Business businessWithDictionaries:businessesDictionary];
+        //self.businesses = [Business businessWithDictionaries:businessesDictionary];
+        [self.businesses addObjectsFromArray:[Business businessWithDictionaries:businessesDictionary]];
         [self.tableView reloadData];
         [SVProgressHUD dismiss];
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
@@ -60,11 +91,14 @@ NSMutableArray *baseSearchTerms = nil;
                                         type:TSMessageNotificationTypeWarning];
         
         NSArray *businessesDictionary = [[NSArray alloc]init];
-        self.businesses = [Business businessWithDictionaries:businessesDictionary];
+        
+        [self.businesses removeAllObjects];
+        [self.businesses addObjectsFromArray:[Business businessWithDictionaries:businessesDictionary]];
         [self.tableView reloadData];
-
+        
         [SVProgressHUD dismiss];
     }];
+
 }
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
@@ -73,14 +107,18 @@ NSMutableArray *baseSearchTerms = nil;
     baseSearchTerms = [[NSMutableArray alloc] initWithObjects:@"restaurants",nil];
 
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
+
     if (self) {
         // You can register for Yelp API keys here: http://www.yelp.com/developers/manage_api_keys
         self.client = [[YelpClient alloc] initWithConsumerKey:kYelpConsumerKey consumerSecret:kYelpConsumerSecret accessToken:kYelpToken accessSecret:kYelpTokenSecret];
         
         [self initSearchBar];
+        self.businesses = [[NSMutableArray alloc]init];
+        self.scrollLimit = 10;
+        self.scrollOffset = 0;
         
         self.searchTerm = [baseSearchTerms componentsJoinedByString:@","];
-        [self fetchBusinessesWithQuery:self.searchTerm params:nil];
+        //[self fetchBusinessesWithQuery:self.searchTerm params:nil isInfiniteScrolling:NO];
     }
     return self;
 }
@@ -94,6 +132,7 @@ NSMutableArray *baseSearchTerms = nil;
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    
     self.tableView.delegate = self;
     self.tableView.dataSource = self;
     [self.tableView registerNib:[UINib nibWithNibName:@"BusinessCell" bundle:nil]
@@ -105,6 +144,16 @@ NSMutableArray *baseSearchTerms = nil;
     self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Filter" style:UIBarButtonItemStylePlain target:self action:@selector(onFilterButton)];
     
     [self.navigationController.navigationBar addSubview:self.searchBar];
+    
+    [self fetchBusinessesWithQuery: [NSString stringWithFormat: self.searchTerm, self.searchBar.text] params:self.filters isInfiniteScrolling:NO];
+    
+    // setup infinite scroll
+    [self.tableView addInfiniteScrollWithHandler:^(UITableView* tableView) {
+        self.scrollOffset = self.scrollOffset + self.scrollLimit;
+        [self fetchBusinessesWithQuery: [NSString stringWithFormat: self.searchTerm, self.searchBar.text] params:self.filters isInfiniteScrolling:YES];
+        // finish infinite scroll animation
+        [self.tableView finishInfiniteScroll];
+    }];
 }
 
 - (void)didReceiveMemoryWarning
@@ -147,7 +196,7 @@ NSMutableArray *baseSearchTerms = nil;
     self.sort = sort;
     self.radius_filter = radius_filter;
     self.deal = deal;
-    [self fetchBusinessesWithQuery:self.searchTerm params:self.filters];
+    [self fetchBusinessesWithQuery:self.searchTerm params:self.filters isInfiniteScrolling:NO];
 }
 
 #pragma mark - Private methods
@@ -198,7 +247,7 @@ NSMutableArray *baseSearchTerms = nil;
     [termsAry addObject:self.searchBar.text];
     self.searchTerm = [termsAry componentsJoinedByString:@","];
     
-    [self fetchBusinessesWithQuery: [NSString stringWithFormat: self.searchTerm, self.searchBar.text] params:self.filters];
+    [self fetchBusinessesWithQuery: [NSString stringWithFormat: self.searchTerm, self.searchBar.text] params:self.filters isInfiniteScrolling:NO];
     self.searchDelayer = nil;
 }
 

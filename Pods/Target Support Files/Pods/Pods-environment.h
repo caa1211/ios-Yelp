@@ -78,3 +78,9 @@
 #define COCOAPODS_VERSION_MINOR_TSMessages 9
 #define COCOAPODS_VERSION_PATCH_TSMessages 12
 
+// UIScrollView-InfiniteScroll
+#define COCOAPODS_POD_AVAILABLE_UIScrollView_InfiniteScroll
+#define COCOAPODS_VERSION_MAJOR_UIScrollView_InfiniteScroll 0
+#define COCOAPODS_VERSION_MINOR_UIScrollView_InfiniteScroll 7
+#define COCOAPODS_VERSION_PATCH_UIScrollView_InfiniteScroll 2
+
